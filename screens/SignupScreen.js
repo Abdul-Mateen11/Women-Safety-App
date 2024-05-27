@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import bcrypt from 'react-native-bcrypt';
+import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
@@ -24,9 +25,9 @@ const SignupScreen = ({ navigation }) => {
       Alert.alert('Error', 'Please include the country code in your phone number (e.g., +123456789)');
       return;
     }
-    
+
     setLoading(true);
-  
+
     const phoneProvider = new firebase.auth.PhoneAuthProvider();
     phoneProvider.verifyPhoneNumber(phone, recaptchaVerifier.current)
       .then(setVerificationId)
@@ -34,7 +35,6 @@ const SignupScreen = ({ navigation }) => {
         Alert.alert('Verification code sent to your phone');
       })
       .catch((error) => {
-        // Handle different error cases
         console.error('Error verifying phone number:', error);
         if (error.code === 'auth/invalid-phone-number') {
           Alert.alert('Invalid Phone Number', 'The phone number you entered is not valid.');
@@ -60,7 +60,8 @@ const SignupScreen = ({ navigation }) => {
     const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, code);
     firebase.auth().signInWithCredential(credential)
       .then(async () => {
-        const userData = { phone, password };
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+        const userData = { phone, password: hashedPassword };
         await db.collection('users').doc(phone).set(userData);
         setCode('');
         Alert.alert('Signup Successful. Please Login');

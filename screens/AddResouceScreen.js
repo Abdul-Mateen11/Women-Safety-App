@@ -216,7 +216,7 @@ const AddResourceScreen = () => {
                 value={editNumber}
                 onChangeText={text => setEditNumber(text)}
               />
-              <TouchableOpacity onPress={editResource}>
+              <TouchableOpacity onPress={editResource} style={[styles.addButton]}>
                 <Text style={styles.buttonText}>Save</Text>
               </TouchableOpacity>
             </View>

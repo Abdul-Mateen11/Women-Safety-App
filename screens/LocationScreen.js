@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Dimensions, StyleSheet, View, Alert, ActivityIndicator } from 'react-native';
+import { Button, Dimensions, StyleSheet, View, Alert, ActivityIndicator ,Text } from 'react-native';
 import * as Location from 'expo-location';
 import MapView from 'react-native-maps';
 import { firebase, db } from '../config';
@@ -14,13 +14,18 @@ const LocationScreen = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setErrorMsg('Permission to access location was denied');
+          return;
+        }
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+      } catch (error) {
+        setErrorMsg('Failed to retrieve location');
+        console.error('Error retrieving location:', error);
       }
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
     })();
   }, []);
 
@@ -150,6 +155,7 @@ const LocationScreen = ({ navigation }) => {
             showsUserLocation={true}
             style={styles.map}
           />
+          <Text></Text>
           <Button
             title="Share Location"
             onPress={handleShareLocation}
@@ -164,7 +170,7 @@ const LocationScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#4682B4',
     alignItems: 'center',
     justifyContent: 'center',
   },

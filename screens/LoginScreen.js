@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import bcrypt from 'react-native-bcrypt';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { firebase, db } from '../config'; // Adjust the import if config.js is in the same directory
@@ -29,6 +30,15 @@ const LoginScreen = ({ navigation }) => {
     checkLoggedIn();
   }, []);
 
+  const comparePasswords = (plainPassword, hashedPassword) => {
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(plainPassword, hashedPassword, (err, res) => {
+        if (err) reject(err);
+        else resolve(res);
+      });
+    });
+  };
+
   const storeUserData = async (userData) => {
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(userData));
@@ -42,17 +52,24 @@ const LoginScreen = ({ navigation }) => {
       Alert.alert('Error', 'Please enter your phone number and password');
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const userDoc = await db.collection('users').doc(phone).get();
       if (userDoc.exists) {
         const userData = userDoc.data();
-        if (userData.password === password) {
+        const isPasswordValid = await comparePasswords(password, userData.password);
+        if (isPasswordValid) {
           await storeUserData(userData);
           setPhoneNumber(phone);
-          navigation.replace('Home');
+          
+          // Check if the phone number is for AdminDashboard
+          if (phone === '+923163002350') {
+            navigation.replace('AdminDashboard');
+          } else {
+            navigation.replace('Home');
+          }
         } else {
           Alert.alert('Error', 'Incorrect password. Please try again.');
         }
@@ -66,6 +83,7 @@ const LoginScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
+  
 
   return (
     <View style={styles.container}>

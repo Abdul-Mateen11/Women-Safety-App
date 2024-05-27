@@ -205,20 +205,12 @@ const HomeScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('ChatList')}>
             <Text style={[styles.buttonText, themeStyles.buttonText]}>Live Chat</Text>
           </TouchableOpacity>
-
-          {phoneNumber === '+923163002350' ? (
-            <TouchableOpacity
-              style={[styles.circleButton, { backgroundColor: 'white', borderColor: '#800080' }]}
-              onPress={() => navigation.navigate('AddResouce')}>
-              <Text style={[styles.buttonText]}>Add Resource</Text>
-            </TouchableOpacity>
-          ) : (
+          
             <TouchableOpacity
               style={[styles.circleButton, { backgroundColor: 'white', borderColor: '#800080' }]}
               onPress={() => navigation.navigate('Resources')}>
               <Text style={[styles.buttonText]}>Resources</Text>
             </TouchableOpacity>
-          )}
         </View>
 
         <TouchableOpacity style={[styles.inputContainer, themeStyles.inputContainer]} onPress={() => navigation.navigate('Location')}>
