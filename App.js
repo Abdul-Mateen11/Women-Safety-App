@@ -22,7 +22,6 @@ import FAQScreen from './screens/FAQScreen';
 import CustomerSupportScreen from './screens/CustomerSupportScreen';
 import ContactUs from './screens/ContactUs';
 import AddResourceScreen from './screens/AddResouceScreen';
-import AdminDashboard from './screens/AdminDashboad';
 
 const Stack = createStackNavigator();
 
