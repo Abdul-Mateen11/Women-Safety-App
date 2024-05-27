@@ -63,13 +63,6 @@ const LoginScreen = ({ navigation }) => {
         if (isPasswordValid) {
           await storeUserData(userData);
           setPhoneNumber(phone);
-          
-          // Check if the phone number is for AdminDashboard
-          if (phone === '+923163002350') {
-            navigation.replace('AdminDashboard');
-          } else {
-            navigation.replace('Home');
-          }
         } else {
           Alert.alert('Error', 'Incorrect password. Please try again.');
         }

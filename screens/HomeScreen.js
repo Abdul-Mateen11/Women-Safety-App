@@ -206,11 +206,19 @@ const HomeScreen = ({ navigation }) => {
             <Text style={[styles.buttonText, themeStyles.buttonText]}>Live Chat</Text>
           </TouchableOpacity>
           
-            <TouchableOpacity
-              style={[styles.circleButton, { backgroundColor: 'white', borderColor: '#800080' }]}
-              onPress={() => navigation.navigate('Resources')}>
-              <Text style={[styles.buttonText]}>Resources</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.circleButton, { backgroundColor: 'white', borderColor: '#800080' }]}
+            onPress={() => {
+              // Check if the phone number matches the specified condition
+              if (phoneNumber === '+923163002350') {
+                navigation.navigate('AddResouce');
+              } else {
+                navigation.navigate('Resources');
+              }
+            }}
+          >
+            <Text style={[styles.buttonText]}>Resources</Text>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={[styles.inputContainer, themeStyles.inputContainer]} onPress={() => navigation.navigate('Location')}>

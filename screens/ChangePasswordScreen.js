@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { db } from '../config'; // Assuming you have imported db from global
+import bcrypt from 'react-native-bcrypt';
 import { phoneNumber } from './global';
 
 const ChangePasswordScreen = ({ navigation }) => {
@@ -11,6 +13,16 @@ const ChangePasswordScreen = ({ navigation }) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  //console.log(oldPassword)
+
+  const comparePasswords = (plainPassword, hashedPassword) => {
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(plainPassword, hashedPassword, (err, res) => {
+        if (err) reject(err);
+        else resolve(res);
+      });
+    });
+  };
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
@@ -20,17 +32,23 @@ const ChangePasswordScreen = ({ navigation }) => {
     } else if (newPassword !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
     } else {
-      // Check old password against database here
-      const isOldPasswordCorrect = await checkOldPasswordFromDatabase(oldPassword);
+      // Check old password against hashed password from the database
+      const userRef = db.collection('users').doc(phoneNumber); // Assuming phoneNumber is the user's phone number
+      const snapshot = await userRef.get();
+      
+      if (!snapshot.exists) {
+        Alert.alert('Error', 'User not found');
+        return;
+      }
+      
+      const userData = snapshot.data();
+      const hashedPasswordFromDatabase = userData.password;
+      const isOldPasswordCorrect = await comparePasswords(oldPassword, hashedPasswordFromDatabase);
 
       if (isOldPasswordCorrect) {
-        
-        const userRef = db.collection('users').doc(phoneNumber);
-
         try {
-          await userRef.update({
-            password: newPassword
-          });
+          const hashedNewPassword = await bcrypt.hashSync(newPassword, 10); // Hash the new password
+          await userRef.update({ password: hashedNewPassword });
           Alert.alert('Success', 'Password changed successfully');
           navigation.goBack();
         } catch (error) {
