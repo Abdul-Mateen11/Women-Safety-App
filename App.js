@@ -22,6 +22,7 @@ import FAQScreen from './screens/FAQScreen';
 import CustomerSupportScreen from './screens/CustomerSupportScreen';
 import ContactUs from './screens/ContactUs';
 import AddResourceScreen from './screens/AddResouceScreen';
+import AdminDashboard from './screens/AdminDashboad';
 
 const Stack = createStackNavigator();
 
@@ -44,7 +45,7 @@ const App = () => {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ headerShown: false }} 
+          //options={{ headerShown: false }} 
         />
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
