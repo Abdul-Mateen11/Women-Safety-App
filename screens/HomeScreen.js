@@ -1,10 +1,10 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect , useEffect} from 'react';
 import { useState } from 'react';
 import { Alert, View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Linking , ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../ThemeContext';
 import * as Location from 'expo-location';
-import { phoneNumber } from './global';
+import { phoneNumber , setnameglobal } from './global';
 import { collection, addDoc, query, getDocs, where, setDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../config';
 
@@ -22,6 +22,28 @@ useLayoutEffect(() => {
     headerTintColor: '#fff', 
   });
 }, [navigation]);
+
+useEffect(() => {
+  const fetchUserName = async () => {
+    try {
+      const userDoc = await db.collection('Profile').doc(phoneNumber).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        const fetchedName = userData.name;
+        //setName(fetchedName);
+        setnameglobal(fetchedName); // Set the global username
+      } else {
+        console.error('No such document!');
+      }
+    } catch (error) {
+      console.error('Error getting document:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  fetchUserName();
+  }, []);
+
 
   const LoadingOverlay = () => (
     <View style={[StyleSheet.absoluteFill, styles.loadingOverlay]}>
@@ -117,7 +139,9 @@ useLayoutEffect(() => {
                   await Promise.all(locationPromises);
   
                   // Check for uncontacted emergency contacts and send them the messages
-                  const emergencyContactsSnapshot = await getDocs(collection(db, 'emergencyContacts'));
+                  const emergencyContactsSnapshot = await getDocs(
+                    query(collection(db, 'emergencyContacts'), where('userPhoneNumber', '==', phoneNumber))
+                  );
                   const emergencyContacts = emergencyContactsSnapshot.docs.map(doc => doc.data().phone);
                   console.log('Emergency Contacts:', emergencyContacts);
   
@@ -217,12 +241,7 @@ useLayoutEffect(() => {
           <TouchableOpacity
             style={[styles.circleButton, { backgroundColor: 'white', borderColor: '#800080' }]}
             onPress={() => {
-              // Check if the phone number matches the specified condition
-              if (phoneNumber === '+923163002350') {
-                navigation.navigate('AddResouce');
-              } else {
                 navigation.navigate('Resources');
-              }
             }}
           >
             <Text style={[styles.buttonText, themeStyles.buttonText]}>Resources</Text>

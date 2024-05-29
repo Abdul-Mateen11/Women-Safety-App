@@ -46,16 +46,19 @@ const LocationScreen = ({ navigation }) => {
 
   const checkForUncontactedEmergency = async () => {
     try {
-      // Fetch all emergency contacts
-      const emergencyContactsSnapshot = await getDocs(collection(db, 'emergencyContacts'));
-      const emergencyContacts = emergencyContactsSnapshot.docs.map(doc => doc.data().phone); // Fetch the phone numbers
+      // Fetch all emergency contacts for the current user
+      const emergencyContactsSnapshot = await getDocs(
+        query(collection(db, 'emergencyContacts'), where('userPhone', '==', phoneNumber))
+      );
+      
+      const emergencyContacts = emergencyContactsSnapshot.docs.map(doc => doc.data().phone);
       console.log('Emergency Contacts:', emergencyContacts);
-
+  
       // Fetch all conversation document IDs
       const conversationsSnapshot = await getDocs(collection(db, 'conversations'));
       const conversationIDs = conversationsSnapshot.docs.map(doc => doc.id);
       console.log('Conversation IDs:', conversationIDs);
-
+  
       // Function to check if a phone number is in any conversation ID
       const isPhoneInConversation = (phone, conversationIDs) => {
         return conversationIDs.some(id => {
@@ -63,14 +66,13 @@ const LocationScreen = ({ navigation }) => {
           return participants.includes(phone) && participants.includes(phoneNumber);
         });
       };
-
+  
       // Find all emergency contacts with no chat
       const uncontactedEmergencies = emergencyContacts.filter(contact => {
-        // Optional logging for debugging
         console.log(`Checking if contact ${contact} is in any conversation...`);
         return !isPhoneInConversation(contact, conversationIDs);
       });
-
+  
       if (uncontactedEmergencies.length > 0) {
         console.log('There are emergency contacts with whom no chat has taken place:', uncontactedEmergencies);
         setUncontactedEmergencies(uncontactedEmergencies); // Save to state for later use
@@ -81,7 +83,7 @@ const LocationScreen = ({ navigation }) => {
       console.error('Error checking for uncontacted emergency:', error);
     }
   };
-
+  
   // Call the function to check
   useEffect(() => {
     checkForUncontactedEmergency();

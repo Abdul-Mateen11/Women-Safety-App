@@ -4,7 +4,7 @@ import { GiftedChat, Bubble, InputToolbar, Composer, Send } from 'react-native-g
 import { collection, addDoc, orderBy, query, onSnapshot, setDoc, doc, deleteDoc, getDocs } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { firebase, db } from '../config'; // Ensure the path to your Firebase configuration is correct
-import { phoneNumber } from './global';
+import { phoneNumber, username } from './global';
 
 const CustomerSupportScreen = () => {
   const [messages, setMessages] = useState([]);
@@ -198,7 +198,7 @@ const CustomerSupportScreen = () => {
       user={{
         _id: userPhone, // Current user's phone number
         avatar: 'https://i.pravatar.cc/300',
-        name: 'Your Name' // Adjust this as needed
+        name: username, // Adjust this as needed
       }}
       onLongPress={handleLongPress}
     />

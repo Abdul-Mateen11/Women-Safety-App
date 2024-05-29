@@ -3,10 +3,6 @@ import { useState } from 'react';
 import { Alert, View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Linking , ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../ThemeContext';
-import * as Location from 'expo-location';
-import { phoneNumber } from './global';
-import { collection, addDoc, query, getDocs, where, setDoc, doc, getDoc } from 'firebase/firestore';
-import { db } from '../config';
 
 
 const AdminDashboard = ({ navigation }) => {

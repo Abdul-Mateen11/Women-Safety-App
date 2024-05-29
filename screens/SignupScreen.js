@@ -4,7 +4,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, Acti
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
 import { firebase, db } from '../config'; // Adjust the import if config.js is in the same directory
-import { setPhoneNumber } from './global'; // Import the setPhoneNumber function from global.js
 
 const SignupScreen = ({ navigation }) => {
   const [phone, setPhone] = useState('');

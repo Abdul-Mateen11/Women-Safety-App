@@ -11,7 +11,6 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const recaptchaVerifier = useRef(null);
   
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -29,7 +28,13 @@ const LoginScreen = ({ navigation }) => {
         if (userData) {
           const parsedUserData = JSON.parse(userData);
           setPhoneNumber(parsedUserData.phone);
-          navigation.replace('Home');
+          if (parsedUserData.phone === '+923163002350') {
+            navigation.replace('Admin');
+          } else if (parsedUserData.phone === '+923124697751') {
+            navigation.replace('Admin')
+          } else {
+            navigation.replace('Home');
+          }
         }
       } catch (error) {
         console.error('Error reading user data from AsyncStorage:', error);
@@ -72,7 +77,13 @@ const LoginScreen = ({ navigation }) => {
         if (isPasswordValid) {
           await storeUserData(userData);
           setPhoneNumber(phone);
-          navigation.replace('Home')
+          if (phone === '+923163002350') {
+            navigation.replace('Admin');
+          } else if (phone === '+923124697751') {
+            navigation.replace('Admin')
+          } else {
+            navigation.replace('Home');
+          }
         } else {
           Alert.alert('Error', 'Incorrect password. Please try again.');
         }
