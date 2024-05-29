@@ -133,10 +133,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: 'plum'
+    borderBottomColor: 'grey'
   },
   conversationTextContainer: {
-    flex: 1
+    flex: 1,
   },
   emergencyConversationName: {
     fontSize: 16,
@@ -145,7 +145,8 @@ const styles = StyleSheet.create({
   },
   conversationName: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: '#800080'
   },
   conversationMessage: {
     fontSize: 14,

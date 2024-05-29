@@ -158,7 +158,7 @@ const LocationScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {loading ? (
-        <ActivityIndicator size="large" color="#FF1493" />
+        <ActivityIndicator size="large" color="#800080" />
       ) : (
         <>
           <MapView
@@ -170,7 +170,7 @@ const LocationScreen = ({ navigation }) => {
           <Button
             title="Share Location"
             onPress={handleShareLocation}
-            color="#FF1493"
+            color="#A94064"
           />
         </>
       )}

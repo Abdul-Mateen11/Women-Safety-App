@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Linking } from 'react-native';
 import { db } from '../config'; // Import your Firebase config
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useTheme } from '../ThemeContext'; // Import useTheme from your ThemeContext
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const ResourceScreen = ({ navigation }) => {
   const { darkMode } = useTheme(); // Get the current theme
@@ -51,6 +52,17 @@ const ResourceScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
+  const openWhatsApp = async (phone) => {
+  const url = `whatsapp://send?phone=${phone}`;
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (!supported) {
+          Alert.alert('Error', 'WhatsApp is not installed');
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+    };
 
   return (
     <View style={[baseStyles.container, darkMode ? darkTheme.container : lightTheme.container]}>
@@ -73,8 +85,10 @@ const ResourceScreen = ({ navigation }) => {
               <Text style={baseStyles.typeTitle}>{item.type}</Text>
               <View style={darkMode ? darkTheme.resource : lightTheme.resource}>
                 <View style={baseStyles.resourceDetails}>
+                  <TouchableOpacity onPress={() => openWhatsApp(item.number)}>
                   <Text style={darkMode ? darkTheme.resourceText : lightTheme.resourceText}>{item.name}</Text>
                   <Text style={darkMode ? darkTheme.resourceText : lightTheme.resourceText}>{item.number}</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
